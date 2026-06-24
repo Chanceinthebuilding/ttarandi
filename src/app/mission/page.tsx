@@ -21,9 +21,11 @@ function kakaoMapLink(station: Station, userLocation?: { lat: number; lng: numbe
 function naverMapLink(station: Station, userLocation?: { lat: number; lng: number } | null) {
   const dname = encodeURIComponent(station.name);
   if (userLocation) {
-    return `https://map.naver.com/v5/directions/${userLocation.lng},${userLocation.lat},현재위치,0/${station.lng},${station.lat},${dname},0/-/bicycle`;
+    // 네이버 지도 앱 딥링크 — 자전거 길찾기, 출발지+도착지 모두 지정
+    return `nmap://route/bicycle?slat=${userLocation.lat}&slng=${userLocation.lng}&sname=${encodeURIComponent('현재위치')}&dlat=${station.lat}&dlng=${station.lng}&dname=${dname}&appname=ttarandi`;
   }
-  return `https://map.naver.com/v5/search/${dname}`;
+  // 위치 없으면 목적지 검색으로 폴백
+  return `nmap://search?query=${dname}`;
 }
 
 export default function MissionPage() {
