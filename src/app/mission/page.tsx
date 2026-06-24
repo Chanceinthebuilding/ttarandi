@@ -10,8 +10,12 @@ import stationsData from '@/data/stations.json';
 const allStations = stationsData as Station[];
 const DIFFICULTIES = Object.keys(DIFFICULTY_CONFIG) as Difficulty[];
 
-function kakaoMapLink(station: Station) {
-  return `https://map.kakao.com/link/to/${encodeURIComponent(station.name)},${station.lat},${station.lng}`;
+function kakaoMapLink(station: Station, userLocation?: { lat: number; lng: number } | null) {
+  const dest = `${encodeURIComponent(station.name)},${station.lat},${station.lng}`;
+  if (userLocation) {
+    return `https://map.kakao.com/link/from/현재위치,${userLocation.lat},${userLocation.lng}/to/${dest}`;
+  }
+  return `https://map.kakao.com/link/to/${dest}`;
 }
 
 export default function MissionPage() {
@@ -229,7 +233,7 @@ export default function MissionPage() {
 
                 {/* 액션 버튼 */}
                 <a
-                  href={kakaoMapLink(currentMission)}
+                  href={kakaoMapLink(currentMission, userLocation)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 bg-[#FAE100] text-[#3C1E1E] font-bold py-4 rounded-2xl active:scale-95 transition-transform"
