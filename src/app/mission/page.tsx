@@ -18,6 +18,14 @@ function kakaoMapLink(station: Station, userLocation?: { lat: number; lng: numbe
   return `https://map.kakao.com/link/to/${dest}`;
 }
 
+function naverMapLink(station: Station, userLocation?: { lat: number; lng: number } | null) {
+  const dname = encodeURIComponent(station.name);
+  if (userLocation) {
+    return `https://map.naver.com/v5/directions/${userLocation.lng},${userLocation.lat},현재위치,0/${station.lng},${station.lat},${dname},0/-/bicycle`;
+  }
+  return `https://map.naver.com/v5/search/${dname}`;
+}
+
 export default function MissionPage() {
   const {
     userLocation,
@@ -231,15 +239,25 @@ export default function MissionPage() {
                   )}
                 </div>
 
-                {/* 액션 버튼 */}
-                <a
-                  href={kakaoMapLink(currentMission, userLocation)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-[#FAE100] text-[#3C1E1E] font-bold py-4 rounded-2xl active:scale-95 transition-transform"
-                >
-                  <span>🗺️</span> 카카오맵으로 길 찾기
-                </a>
+                {/* 지도 버튼 */}
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href={kakaoMapLink(currentMission, userLocation)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-[#FAE100] text-[#3C1E1E] font-bold py-3.5 rounded-2xl active:scale-95 transition-transform text-sm"
+                  >
+                    <span>🗺️</span> 카카오맵
+                  </a>
+                  <a
+                    href={naverMapLink(currentMission, userLocation)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-[#03C75A] text-white font-bold py-3.5 rounded-2xl active:scale-95 transition-transform text-sm"
+                  >
+                    <span>🟢</span> 네이버지도
+                  </a>
+                </div>
 
                 <button
                   onClick={completeMission}
