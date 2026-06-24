@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import { getCompletedMissions, getTotalDistance, getTodayCount } from '@/lib/storage';
 import type { CompletedMission } from '@/types';
-import { formatDistance } from '@/lib/distance';
+import { formatDistance, roadDistance } from '@/lib/distance';
 
 interface Badge {
   id: string;
@@ -163,7 +163,7 @@ export default function BadgesPage() {
                     {new Date(m.completedAt).toLocaleDateString('ko-KR', {
                       month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
                     })}
-                    {m.distance > 0 && ` · ${formatDistance(m.distance)}`}
+                    {m.distance > 0 && ` · ${formatDistance(roadDistance(m.distance))}`}
                   </div>
                 </div>
                 <span className="text-xs text-gray-400">{m.station.district}</span>

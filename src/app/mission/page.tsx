@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import { useAppStore } from '@/lib/store';
-import { haversine, estimatedMinutes, formatDistance } from '@/lib/distance';
+import { haversine, roadDistance, estimatedMinutes, formatDistance } from '@/lib/distance';
 import { DIFFICULTY_CONFIG, type Difficulty, type Station } from '@/types';
 import stationsData from '@/data/stations.json';
 
@@ -266,12 +266,12 @@ export default function MissionPage() {
                   {userLocation && missionDistance > 0 && (
                     <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100">
                       <div className="flex-1 text-center">
-                        <div className="font-black text-[#4caf6e] text-lg">{formatDistance(missionDistance)}</div>
-                        <div className="text-xs text-gray-400 mt-0.5">예상 거리</div>
+                        <div className="font-black text-[#4caf6e] text-lg">{formatDistance(roadDistance(missionDistance))}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">예상 경로</div>
                       </div>
                       <div className="w-px bg-gray-100" />
                       <div className="flex-1 text-center">
-                        <div className="font-black text-[#4caf6e] text-lg">약 {estimatedMinutes(missionDistance)}분</div>
+                        <div className="font-black text-[#4caf6e] text-lg">약 {estimatedMinutes(roadDistance(missionDistance))}분</div>
                         <div className="text-xs text-gray-400 mt-0.5">소요 시간</div>
                       </div>
                     </div>
