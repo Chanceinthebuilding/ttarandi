@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import type { Station, Difficulty } from '@/types';
 import { saveMission } from './storage';
 
-type DrawState = 'idle' | 'drawing' | 'revealed' | 'done';
+type DrawState = 'idle' | 'drawing' | 'revealed' | 'done' | 'no-results';
 
 interface AppStore {
   userLocation: { lat: number; lng: number } | null;
@@ -18,6 +18,7 @@ interface AppStore {
   setLocationError: (err: string) => void;
   setDifficulty: (d: Difficulty) => void;
   startDrawing: () => void;
+  setNoResults: () => void;
   revealMission: (station: Station, distance: number) => void;
   completeMission: () => void;
   resetMission: () => void;
@@ -35,6 +36,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   setLocationError: (err) => set({ locationError: err }),
   setDifficulty: (d) => set({ difficulty: d, drawState: 'idle', currentMission: null }),
   startDrawing: () => set({ drawState: 'drawing' }),
+  setNoResults: () => set({ drawState: 'no-results' }),
   revealMission: (station, distance) =>
     set({ drawState: 'revealed', currentMission: station, missionDistance: distance }),
   completeMission: () => {

@@ -43,7 +43,15 @@ export default function MissionPage() {
     revealMission,
     completeMission,
     resetMission,
+    setNoResults,
   } = useAppStore();
+
+  // 서울 경계 (위경도 범위)
+  const SEOUL_BOUNDS = { latMin: 37.413, latMax: 37.715, lngMin: 126.734, lngMax: 127.269 };
+  const isInSeoul = userLocation
+    ? userLocation.lat >= SEOUL_BOUNDS.latMin && userLocation.lat <= SEOUL_BOUNDS.latMax &&
+      userLocation.lng >= SEOUL_BOUNDS.lngMin && userLocation.lng <= SEOUL_BOUNDS.lngMax
+    : true;
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -81,7 +89,8 @@ export default function MissionPage() {
       }
 
       if (candidates.length === 0) {
-        candidates = allStations;
+        setNoResults();
+        return;
       }
 
       const picked = candidates[Math.floor(Math.random() * candidates.length)];
@@ -126,6 +135,14 @@ export default function MissionPage() {
           </span>
         </div>
 
+        {/* 서울 외 경고 (기능 블락 없이 안내만) */}
+        {userLocation && !isInSeoul && (
+          <div className="flex items-start gap-2 px-4 py-3 rounded-2xl bg-orange-50 border border-orange-200 text-sm text-orange-700">
+            <span className="text-base flex-shrink-0">🚨</span>
+            <span>현재위치가 서울이 아닙니다. 서울로 이동 후 재시작해주세요!</span>
+          </div>
+        )}
+
         {/* 난이도 선택 */}
         <div>
           <p className="text-xs font-bold text-gray-500 mb-2 px-1">난이도 선택</p>
@@ -159,6 +176,26 @@ export default function MissionPage() {
         </div>
 
         {/* 메인 뽑기 영역 */}
+        {drawState === 'no-results' && (
+          <div className="flex flex-col items-center gap-4 py-8">
+            <div className="w-32 h-32 rounded-full bg-orange-50 flex items-center justify-center text-5xl">
+              🔍
+            </div>
+            <div className="text-center">
+              <p className="font-bold text-gray-700">해당하는 장소가 없습니다</p>
+              <p className="text-xs text-gray-400 mt-1">
+                {cfg.label} 난이도 범위 내 대여소가 없어요.<br />난이도를 바꿔서 다시 시도해보세요!
+              </p>
+            </div>
+            <button
+              onClick={resetMission}
+              className="mt-2 bg-[#4caf6e] text-white font-black text-base px-10 py-3.5 rounded-full shadow-lg active:scale-95 transition-transform"
+            >
+              다시 선택하기
+            </button>
+          </div>
+        )}
+
         {drawState === 'idle' && (
           <div className="flex flex-col items-center gap-4 py-8">
             <div className="w-32 h-32 rounded-full bg-white shadow-md flex items-center justify-center border-4 border-[#e8f5ee]">
